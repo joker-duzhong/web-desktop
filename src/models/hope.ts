@@ -1,5 +1,5 @@
 import { createVNode, render } from "vue";
-import { HopeInterface, HopeNamespace } from "./types";
+import { HopeInterface, HopeNamespace } from "./@types";
 import Application from "../components/Application.vue";
 
 export class Hope implements HopeInterface {
