@@ -36,7 +36,7 @@ export class Hope implements HopeInterface {
   createApp(options: HopeNamespace.AppOptions): void {
     const { appid } = options;
     const div = document.createElement("div"); // 创建一个dom容器节点div
-    this.rander(this.name + "toast", div, Application, { appid });
+    this.rander(this.name + "app", div, Application, { appid });
   }
 }
 
