@@ -4,10 +4,15 @@ import { appNotify, NotifyType } from '@/models/app.notify';
 import { AppBaseInfo } from '@/models/application';
 import { onMounted, ref } from 'vue';
 import Tabbar from '@/components/Tabbar.vue'
+import { applications } from '@/config/app.ts'
+import Loading from '@/components/Loading.vue'
+import { hope } from '@/models/hope';
 
 
+const loading = ref(false);
 onMounted(() => {
   appNotify.addListener(NotifyType.Wallpaper, updatedWallpaper, 'index');
+  loading.value = true;
   updatedWallpaper();
   init();
 })
@@ -15,7 +20,11 @@ onMounted(() => {
 const shortcuts = ref([] as AppBaseInfo[]);
 /** 初始化应用 */
 function init(): void {
-  shortcuts.value = appContext.desktop.shortcuts
+  appContext.desktop.setShortcuts(applications)
+  setTimeout(() => {
+    shortcuts.value = appContext.desktop.shortcuts;
+    loading.value = false;
+  }, 700);
 }
 
 const wallpaper = ref('');
@@ -27,15 +36,19 @@ function updatedWallpaper(): void {
 /** 点击应用 */
 function onItem(app: AppBaseInfo): void {
   console.log(app);
+  hope.createApp(app);
 }
 
 </script>
 <template>
-  <div class="desktop flex-c" :style="{ backgroundImage: 'url(' + wallpaper + ')' }">
-    <div class="main flex">
-      <div class="shortcut flex-c" v-for="item in shortcuts" :key="item.appid" @dblclick="onItem(item)">
-        <img class="icon" :src="item.icon" alt="">
-        <div class="name ellipsis2">{{ item.name }}</div>
+  <Loading v-if="loading" />
+  <div class="desktop flex-c" :style="{ backgroundImage: 'url(' + wallpaper + ')' }" v-else>
+    <div class="main" id="desktop-main">
+      <div class="shortcuts flex">
+        <div class="shortcut flex-c" v-for="item in shortcuts" :key="item.appid" @dblclick="onItem(item)">
+          <img class="icon" :src="item.icon" alt="">
+          <div class="name ellipsis2">{{ item.name }}</div>
+        </div>
       </div>
     </div>
     <Tabbar></Tabbar>
@@ -51,9 +64,19 @@ function onItem(app: AppBaseInfo): void {
   user-select: none;
 
   .main {
-    padding: 10px;
     width: 100%;
     flex: 1;
+    position: relative;
+  }
+
+  .shortcuts {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px;
+ 
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;
@@ -65,6 +88,7 @@ function onItem(app: AppBaseInfo): void {
     padding: 3px;
     overflow: hidden;
     margin-bottom: 20px;
+
 
     .icon {
       width: 40px;

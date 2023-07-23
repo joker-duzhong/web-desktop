@@ -6,10 +6,8 @@ export interface HopeInterface {
 }
 
 export namespace HopeNamespace {
-  export interface AppOptions extends AppBaseInfo {
-    /** 实例 */
-    el?: Element;
-  }
+  export interface AppOptions extends AppBaseInfo { }
+
 }
 
 export enum ThemeEnum {
