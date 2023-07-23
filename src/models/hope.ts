@@ -6,6 +6,8 @@ import Application from "../components/Application.vue";
 export class Hope implements HopeInterface {
   private static _ins = new Hope();
   private name: string = "hope-";
+
+  private _list: any[] = []
   public static get ins(): Hope {
     return Hope._ins ? Hope._ins : (Hope._ins = new Hope());
   }
@@ -22,8 +24,11 @@ export class Hope implements HopeInterface {
       console.log('应用已创建');
       return;
     }
+
     const div = document.getElementById('desktop-main'); // 容器追加到body中
+
     const vnode = createVNode(template, props); // 将组件编译为虚拟dom节点
+
     render(vnode, div); // 将虚拟dom添加到div容器中
   }
 
